@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:linear_progress_bar/linear_progress_bar.dart';
+import 'package:provider/provider.dart';
+import 'package:task_ui_1/Provider/progressProvider.dart';
 import 'package:task_ui_1/constants/colorConstants.dart';
+import 'package:task_ui_1/widgets/customWidget/transactionLimit_alert.dart';
 
 class Trans_limit extends StatelessWidget {
   @override
@@ -22,26 +25,35 @@ class Trans_limit extends StatelessWidget {
               style: TextStyle(fontSize: 12),
             ),
             SizedBox(height: 10),
-            LinearProgressBar(
-              maxSteps: 6,
-              progressType: LinearProgressBar.progressTypeLinear,
-              // Use Linear progress
-              currentStep: 3,
-              progressColor: ColorConstant.blue,
-              backgroundColor: ColorConstant.white,
+            Consumer(
+              builder: (BuildContext context, value, Widget? child) {
+                return LinearProgressBar(
+                  maxSteps: 50000,
+                  progressType: LinearProgressBar.progressTypeLinear,
+                  // Use Linear progress
+                  currentStep: Provider.of<progressProvider>(context).progress,
+                  progressColor: ColorConstant.blue,
+                  backgroundColor: ColorConstant.white,
+                );
+              },
             ),
-            SizedBox(height: 10),
-            Text('36668 left out of ₹50000',
+            const SizedBox(height: 10),
+            Text(
+                '${Provider.of<progressProvider>(context).progress} left out of ₹50000',
                 style: TextStyle(
                   fontSize: 12,
-                )
-                //style: TextStyle(color: ColorConstant.black),
-                ),
+                )),
             SizedBox(height: 10),
             ElevatedButton(
               style:
                   ElevatedButton.styleFrom(backgroundColor: ColorConstant.blue),
-              onPressed: () {},
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return transLimit_box();
+                    });
+              },
               child: Text("Increase Limit", style: TextStyle(fontSize: 14)),
             ),
           ],
